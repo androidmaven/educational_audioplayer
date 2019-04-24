@@ -141,6 +141,11 @@ class PlayerState extends State<Player> {
   }
 
   _onComplete() {
-    setState(() => playerState = PlayerStatus.stopped);
+    if (currentAudioIndex + 1 < currentAudioUrls.length) {
+      currentAudioIndex++;
+      play(urls: currentAudioUrls, index: currentAudioIndex);
+    } else {
+      setState(() => playerState = PlayerStatus.stopped);
+    }
   }
 }
