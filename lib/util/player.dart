@@ -7,9 +7,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'loader.dart';
 
-enum PlayerStatus { stopped, playing, paused }
-
 List<String> currentAudioUrls = [];
+List<String> currentAudioNames = [];
 int currentAudioIndex;
 
 class Player extends StatefulWidget {
@@ -26,11 +25,12 @@ class PlayerState extends State<Player> {
   Duration duration;
   Duration position;
   bool isLoading = false;
+  String audioName = '';
 
-  PlayerStatus playerState = PlayerStatus.stopped;
+  AudioPlayerState playerState = AudioPlayerState.STOPPED;
 
-  get isPlaying => playerState == PlayerStatus.playing;
-  get isPaused => playerState == PlayerStatus.paused;
+  get isPlaying => playerState == AudioPlayerState.PLAYING;
+  get isPaused => playerState == AudioPlayerState.PAUSED;
 
   get durationText =>
       duration != null ? duration.toString().split('.').first : '';
@@ -73,9 +73,12 @@ class PlayerState extends State<Player> {
     }
   }
 
-  Future play({List<String> urls, int index}) async {
+  Future play({List<String> urls, int index, List<String> names}) async {
     currentAudioUrls = urls;
+    currentAudioNames = names;
     currentAudioIndex = index;
+
+    updateName(names[index]);
 
     String path = await getLocalPath(urls[index]);
     if ((await File(path).exists())) {
@@ -90,14 +93,20 @@ class PlayerState extends State<Player> {
 
   Future pause() async {
     await audioPlayer.pause();
-    setState(() => playerState = PlayerStatus.paused);
+    setState(() => playerState = AudioPlayerState.PAUSED);
   }
 
   Future stop() async {
     await audioPlayer.stop();
     setState(() {
-      playerState = PlayerStatus.stopped;
+      playerState = AudioPlayerState.STOPPED;
       position = new Duration();
+    });
+  }
+
+  updateName(String name) {
+    setState(() {
+      audioName = name;
     });
   }
 
@@ -113,15 +122,21 @@ class PlayerState extends State<Player> {
     audioPlayerStateSubscription = audioPlayer.onPlayerStateChanged.listen((s) {
       if (s == AudioPlayerState.PLAYING) {
         setState(() => duration = audioPlayer.duration);
-      } else if (s == AudioPlayerState.STOPPED) {
+      } else if (s == AudioPlayerState.COMPLETED) {
+        setState(() {
+          duration = new Duration(seconds: 0);
+          position = new Duration(seconds: 0);
+        });
         _onComplete();
+      } else if (s == AudioPlayerState.STOPPED) {
+        _onStop();
         setState(() {
           position = duration;
         });
       }
     }, onError: (msg) {
       setState(() {
-        playerState = PlayerStatus.stopped;
+        playerState = AudioPlayerState.STOPPED;
         duration = new Duration(seconds: 0);
         position = new Duration(seconds: 0);
       });
@@ -131,21 +146,28 @@ class PlayerState extends State<Player> {
   Future _playNetwork(String url) async {
     await audioPlayer.play(url);
     setState(() {
-      playerState = PlayerStatus.playing;
+      playerState = AudioPlayerState.PLAYING;
     });
   }
 
   Future _playLocal(String path) async {
     await audioPlayer.play(path, isLocal: true);
-    setState(() => playerState = PlayerStatus.playing);
+    setState(() => playerState = AudioPlayerState.PLAYING);
+  }
+
+  _onStop() {
+    setState(() => playerState = AudioPlayerState.STOPPED);
   }
 
   _onComplete() {
     if (currentAudioIndex + 1 < currentAudioUrls.length) {
       currentAudioIndex++;
-      play(urls: currentAudioUrls, index: currentAudioIndex);
+      play(
+          urls: currentAudioUrls,
+          index: currentAudioIndex,
+          names: currentAudioNames);
     } else {
-      setState(() => playerState = PlayerStatus.stopped);
+      _onStop();
     }
   }
 }

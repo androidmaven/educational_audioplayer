@@ -19,10 +19,10 @@ class _AudioScreenState extends State<AudioScreen> {
 
   Widget _buildAudioItem(BuildContext context, int index) {
     return ListTile(
-      title: Text('Lection $index'),
+      title: Text(audioNames[index]),
       onTap: () {
         bottomPlayer.show();
-        bottomPlayer.play(urls: audioList, index: index);
+        bottomPlayer.play(urls: audios, index: index, names: audioNames);
       },
     );
   }
@@ -33,7 +33,7 @@ class _AudioScreenState extends State<AudioScreen> {
       appBar: AppBar(title: Text('educational_audio')),
       body: ListView.builder(
         itemBuilder: _buildAudioItem,
-        itemCount: audioList.length,
+        itemCount: audios.length,
       ),
       bottomNavigationBar: bottomPlayer,
     );
