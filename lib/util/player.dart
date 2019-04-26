@@ -104,6 +104,36 @@ class PlayerState extends State<Player> {
     });
   }
 
+  Future playNext() async {
+    if (currentAudioIndex + 1 < currentAudioUrls.length) {
+      await audioPlayer.stop();
+      setState(() {
+        duration = new Duration(seconds: 0);
+        position = new Duration(seconds: 0);
+      });
+      currentAudioIndex++;
+      play(
+          urls: currentAudioUrls,
+          index: currentAudioIndex,
+          names: currentAudioNames);
+    }
+  }
+
+  Future playPrevious() async {
+    if (currentAudioIndex - 1 > -1) {
+      await audioPlayer.stop();
+      setState(() {
+        duration = new Duration(seconds: 0);
+        position = new Duration(seconds: 0);
+      });
+      currentAudioIndex--;
+      play(
+          urls: currentAudioUrls,
+          index: currentAudioIndex,
+          names: currentAudioNames);
+    }
+  }
+
   updateName(String name) {
     setState(() {
       audioName = name;

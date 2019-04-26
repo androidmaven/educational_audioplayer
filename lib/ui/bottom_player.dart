@@ -58,7 +58,23 @@ class _BottomSheetPlayerState extends PlayerState {
                   audioName,
                   style: TextStyle(fontSize: audioNameSize),
                 ),
-                Row(mainAxisSize: MainAxisSize.max, children: [
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  (duration == null)
+                      ? Container()
+                      : Column(
+                          children: <Widget>[
+                            Slider(
+                                value:
+                                    position?.inMilliseconds?.toDouble() ?? 0.0,
+                                onChanged: (double value) => audioPlayer
+                                    .seek((value / 1000).roundToDouble()),
+                                min: 0.0,
+                                max: duration.inMilliseconds.toDouble()),
+                            Text(
+                                "${position != null ? positionText : ''}    /    $durationText",
+                                style: TextStyle(fontSize: timeSize)),
+                          ],
+                        ),
                   IconButton(
                       onPressed: () {
                         isPlaying
@@ -68,29 +84,32 @@ class _BottomSheetPlayerState extends PlayerState {
                                 index: currentAudioIndex,
                                 names: currentAudioNames);
                       },
-                      iconSize: 50.0,
+                      iconSize: iconSize,
                       icon: isPlaying
                           ? Icon(Icons.pause)
                           : Icon(Icons.play_arrow),
-                      color: Colors.cyan),
-                  (duration == null)
-                      ? Container()
-                      : Slider(
-                          value: position?.inMilliseconds?.toDouble() ?? 0.0,
-                          onChanged: (double value) =>
-                              audioPlayer.seek((value / 1000).roundToDouble()),
-                          min: 0.0,
-                          max: duration.inMilliseconds.toDouble()),
+                      color: buttonColor)
                 ]),
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                        onPressed: () {
+                          playPrevious();
+                        },
+                        iconSize: iconSize,
+                        icon: Icon(Icons.skip_previous),
+                        color: buttonColor),
+                    IconButton(
+                        onPressed: () {
+                          playNext();
+                        },
+                        iconSize: iconSize,
+                        icon: Icon(Icons.skip_next),
+                        color: buttonColor)
+                  ],
+                )
               ],
             ),
-            (duration == null)
-                ? Container()
-                : Text(
-                    position != null
-                        ? "${positionText ?? ''} / ${durationText ?? ''}"
-                        : duration != null ? durationText : '',
-                    style: TextStyle(fontSize: 24.0))
           ])),
     );
   }
