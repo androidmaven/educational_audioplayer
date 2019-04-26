@@ -10,6 +10,8 @@ import 'loader.dart';
 List<String> currentAudioUrls = [];
 List<String> currentAudioNames = [];
 int currentAudioIndex;
+String currentChapterName = '';
+String currentLecturerName = '';
 
 class Player extends StatefulWidget {
   @override
@@ -73,10 +75,24 @@ class PlayerState extends State<Player> {
     }
   }
 
-  Future play({List<String> urls, int index, List<String> names}) async {
+  Future play(
+      {List<String> urls,
+      int index,
+      List<String> names,
+      String lecturerName,
+      String chapterName}) async {
+    if (lecturerName == null) {
+      lecturerName = currentLecturerName;
+    }
+    if (chapterName == null) {
+      chapterName = currentChapterName;
+    }
+
     currentAudioUrls = urls;
     currentAudioNames = names;
     currentAudioIndex = index;
+    currentChapterName = chapterName;
+    currentLecturerName = lecturerName;
 
     updateName(names[index]);
 
@@ -100,7 +116,7 @@ class PlayerState extends State<Player> {
     await audioPlayer.stop();
     setState(() {
       playerState = AudioPlayerState.STOPPED;
-      position = new Duration();
+      position = Duration();
     });
   }
 
@@ -109,8 +125,8 @@ class PlayerState extends State<Player> {
       if (isPlaying) {
         await audioPlayer.stop();
         setState(() {
-          duration = new Duration(seconds: 0);
-          position = new Duration(seconds: 0);
+          duration = Duration(seconds: 0);
+          position = Duration(seconds: 0);
         });
         currentAudioIndex++;
         play(
@@ -120,8 +136,8 @@ class PlayerState extends State<Player> {
       } else {
         await audioPlayer.stop();
         setState(() {
-          duration = new Duration(seconds: 0);
-          position = new Duration(seconds: 0);
+          duration = Duration(seconds: 0);
+          position = Duration(seconds: 0);
         });
         currentAudioIndex++;
         await play(
@@ -138,8 +154,8 @@ class PlayerState extends State<Player> {
       if (isPlaying) {
         await audioPlayer.stop();
         setState(() {
-          duration = new Duration(seconds: 0);
-          position = new Duration(seconds: 0);
+          duration = Duration(seconds: 0);
+          position = Duration(seconds: 0);
         });
         currentAudioIndex--;
         play(
@@ -149,8 +165,8 @@ class PlayerState extends State<Player> {
       } else {
         await audioPlayer.stop();
         setState(() {
-          duration = new Duration(seconds: 0);
-          position = new Duration(seconds: 0);
+          duration = Duration(seconds: 0);
+          position = Duration(seconds: 0);
         });
         currentAudioIndex--;
         await play(
@@ -160,6 +176,27 @@ class PlayerState extends State<Player> {
         await audioPlayer.stop();
       }
     }
+  }
+
+  changePosition(double seconds) {
+    setState(() {
+      Duration newPosition =
+          Duration(seconds: (position.inSeconds + seconds).toInt());
+      if (newPosition <= duration) {
+        audioPlayer.seek(newPosition.inSeconds.toDouble());
+        position = newPosition;
+      }
+    });
+  }
+
+  setPosition(double value) {
+    setState(() {
+      Duration newPosition = Duration(milliseconds: value.toInt());
+      if (newPosition <= duration) {
+        audioPlayer.seek(newPosition.inSeconds.toDouble());
+        position = Duration(milliseconds: value.toInt());
+      }
+    });
   }
 
   updateName(String name) {
@@ -174,7 +211,7 @@ class PlayerState extends State<Player> {
   }
 
   initAudioPlayer() {
-    audioPlayer = new AudioPlayer();
+    audioPlayer = AudioPlayer();
     positionSubscription = audioPlayer.onAudioPositionChanged
         .listen((p) => setState(() => position = p));
     audioPlayerStateSubscription = audioPlayer.onPlayerStateChanged.listen((s) {
@@ -182,8 +219,8 @@ class PlayerState extends State<Player> {
         setState(() => duration = audioPlayer.duration);
       } else if (s == AudioPlayerState.COMPLETED) {
         setState(() {
-          duration = new Duration(seconds: 0);
-          position = new Duration(seconds: 0);
+          duration = Duration(seconds: 0);
+          position = Duration(seconds: 0);
         });
         _onComplete();
       } else if (s == AudioPlayerState.STOPPED) {
@@ -195,8 +232,8 @@ class PlayerState extends State<Player> {
     }, onError: (msg) {
       setState(() {
         playerState = AudioPlayerState.STOPPED;
-        duration = new Duration(seconds: 0);
-        position = new Duration(seconds: 0);
+        duration = Duration(seconds: 0);
+        position = Duration(seconds: 0);
       });
     });
   }

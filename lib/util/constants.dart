@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-double audioNameSize = 16.0;
-double timeSize = 16.0;
-double iconSize = 50.0;
+const double audioNameSize = 20.0;
+const double chapterNameSize = 16.0;
+const double lecturerNameSize = 14.0;
+const double timeSize = 16.0;
+const double iconSize = 50.0;
+const double playerInset = 8.0;
 
-Color buttonColor = Colors.cyan;
+const Color buttonColor = Colors.cyan;

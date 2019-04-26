@@ -22,7 +22,13 @@ class _AudioScreenState extends State<AudioScreen> {
       title: Text(audioNames[index]),
       onTap: () {
         bottomPlayer.show();
-        bottomPlayer.play(urls: audios, index: index, names: audioNames);
+        bottomPlayer.play(
+            urls: audios,
+            index: index,
+            names: audioNames,
+            lecturerName: 'Арсен абу Яхья (Шарх шейха аль-Усеймина)',
+            chapterName:
+                'О достоинстве таухида, и о том, что он искупает грехи');
       },
     );
   }

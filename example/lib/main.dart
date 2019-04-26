@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'audio_screen.dart';
 
 void main() {
-  runApp(new MaterialApp(
+  runApp(MaterialApp(
     title: 'Audio Sample App',
     home: Home(),
   ));
