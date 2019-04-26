@@ -106,31 +106,59 @@ class PlayerState extends State<Player> {
 
   Future playNext() async {
     if (currentAudioIndex + 1 < currentAudioUrls.length) {
-      await audioPlayer.stop();
-      setState(() {
-        duration = new Duration(seconds: 0);
-        position = new Duration(seconds: 0);
-      });
-      currentAudioIndex++;
-      play(
-          urls: currentAudioUrls,
-          index: currentAudioIndex,
-          names: currentAudioNames);
+      if (isPlaying) {
+        await audioPlayer.stop();
+        setState(() {
+          duration = new Duration(seconds: 0);
+          position = new Duration(seconds: 0);
+        });
+        currentAudioIndex++;
+        play(
+            urls: currentAudioUrls,
+            index: currentAudioIndex,
+            names: currentAudioNames);
+      } else {
+        await audioPlayer.stop();
+        setState(() {
+          duration = new Duration(seconds: 0);
+          position = new Duration(seconds: 0);
+        });
+        currentAudioIndex++;
+        await play(
+            urls: currentAudioUrls,
+            index: currentAudioIndex,
+            names: currentAudioNames);
+        await audioPlayer.stop();
+      }
     }
   }
 
   Future playPrevious() async {
     if (currentAudioIndex - 1 > -1) {
-      await audioPlayer.stop();
-      setState(() {
-        duration = new Duration(seconds: 0);
-        position = new Duration(seconds: 0);
-      });
-      currentAudioIndex--;
-      play(
-          urls: currentAudioUrls,
-          index: currentAudioIndex,
-          names: currentAudioNames);
+      if (isPlaying) {
+        await audioPlayer.stop();
+        setState(() {
+          duration = new Duration(seconds: 0);
+          position = new Duration(seconds: 0);
+        });
+        currentAudioIndex--;
+        play(
+            urls: currentAudioUrls,
+            index: currentAudioIndex,
+            names: currentAudioNames);
+      } else {
+        await audioPlayer.stop();
+        setState(() {
+          duration = new Duration(seconds: 0);
+          position = new Duration(seconds: 0);
+        });
+        currentAudioIndex--;
+        await play(
+            urls: currentAudioUrls,
+            index: currentAudioIndex,
+            names: currentAudioNames);
+        await audioPlayer.stop();
+      }
     }
   }
 
