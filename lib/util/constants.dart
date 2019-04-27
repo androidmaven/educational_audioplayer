@@ -6,5 +6,4 @@ const double lecturerNameSize = 14.0;
 const double timeSize = 16.0;
 const double iconSize = 50.0;
 const double playerInset = 8.0;
-
-const Color buttonColor = Colors.cyan;
+const double closeIconSize = 32.0;

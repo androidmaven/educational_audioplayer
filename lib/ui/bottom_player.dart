@@ -60,31 +60,39 @@ class _BottomSheetPlayerState extends PlayerState {
       visible: !isHidden,
       maintainState: true,
       child: Container(
+        color: Theme.of(context)
+            .unselectedWidgetColor,
           padding: EdgeInsets.all(playerInset),
           child: Wrap(children: [
             Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: playerInset),
-                  child: Text(
-                    currentChapterName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: chapterNameSize),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: playerInset),
-                  child: Text(
-                    currentLecturerName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: lecturerNameSize),
-                  ),
-                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(child: Text(
+                        audioName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: audioNameSize),
+                      ),),
+
+                  IconButton(icon: Icon(Icons.close, size: closeIconSize,),
+                      onPressed: () {
+                    audioPlayer.stop();
+                    hide();
+                      })
+                ]),
                 Text(
-                  audioName,
+                  currentChapterName,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: audioNameSize),
+                  style: TextStyle(fontSize: chapterNameSize),
                 ),
+
+                Text(
+                  currentLecturerName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: lecturerNameSize),
+
+                ),
+
                 (duration == null)
                     ? Container()
                     : Column(
@@ -108,6 +116,7 @@ class _BottomSheetPlayerState extends PlayerState {
                           ),
                         ],
                       ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -117,14 +126,14 @@ class _BottomSheetPlayerState extends PlayerState {
                         },
                         iconSize: iconSize,
                         icon: Icon(Icons.skip_previous),
-                        color: buttonColor),
+                        color: Theme.of(context).accentColor),
                     IconButton(
                         onPressed: () {
                           changePosition(-10);
                         },
                         iconSize: iconSize,
                         icon: Icon(Icons.replay_10),
-                        color: buttonColor),
+                        color: Theme.of(context).accentColor),
                     IconButton(
                         onPressed: () {
                           isPlaying
@@ -138,23 +147,24 @@ class _BottomSheetPlayerState extends PlayerState {
                         icon: isPlaying
                             ? Icon(Icons.pause)
                             : Icon(Icons.play_arrow),
-                        color: buttonColor),
+                        color: Theme.of(context).accentColor),
                     IconButton(
                         onPressed: () {
                           changePosition(10);
                         },
                         iconSize: iconSize,
                         icon: Icon(Icons.forward_10),
-                        color: buttonColor),
+                        color: Theme.of(context).accentColor),
                     IconButton(
                         onPressed: () {
                           playNext();
                         },
                         iconSize: iconSize,
                         icon: Icon(Icons.skip_next),
-                        color: buttonColor),
+                        color: Theme.of(context).accentColor),
                   ],
-                )
+                ),
+
               ],
             ),
           ])),
