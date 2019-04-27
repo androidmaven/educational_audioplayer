@@ -11,13 +11,14 @@ dependencies:
   flutter:
     sdk: flutter
 
-dev_dependencies:
-  dynamic_theme: ^1.0.0
-  flutter_test:
-    sdk: flutter
+  dynamic_theme:
   audioplayer:
   http:
   path_provider:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

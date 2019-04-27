@@ -23,6 +23,7 @@ dependencies:
   audioplayer:
   http:
   path_provider:
+  dynamic_theme:
   educational_audioplayer:
       path: ../
 
