@@ -11,10 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  dynamic_theme:
-  audioplayer:
-  http:
-  path_provider:
+  audioplayer: ^00.5.2
+  http: ^00.12.0+2
+  path_provider: ^00.5.0+1
 
 dev_dependencies:
   flutter_test:
