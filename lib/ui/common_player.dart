@@ -5,7 +5,7 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'loader.dart';
+import '../util/loader.dart';
 
 List<String> currentAudioUrls = [];
 List<String> currentAudioNames = [];
@@ -13,14 +13,14 @@ int currentAudioIndex;
 String currentChapterName = '';
 String currentLecturerName = '';
 
-class Player extends StatefulWidget {
+class CommonPlayer extends StatefulWidget {
   @override
-  PlayerState createState() {
-    return PlayerState();
+  CommonPlayerState createState() {
+    return CommonPlayerState();
   }
 }
 
-class PlayerState extends State<Player> {
+class CommonPlayerState extends State<CommonPlayer> {
   AudioPlayer audioPlayer;
   StreamSubscription positionSubscription;
   StreamSubscription audioPlayerStateSubscription;
@@ -178,10 +178,13 @@ class PlayerState extends State<Player> {
     }
   }
 
-  changePosition(double seconds) {
+  addSecondsToPosition(double seconds) {
     setState(() {
       Duration newPosition =
           Duration(seconds: (position.inSeconds + seconds).toInt());
+      if(newPosition.inSeconds < 0){
+        newPosition = Duration(seconds: 0);
+      }
       if (newPosition <= duration) {
         audioPlayer.seek(newPosition.inSeconds.toDouble());
         position = newPosition;

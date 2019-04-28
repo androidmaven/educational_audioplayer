@@ -1,4 +1,4 @@
-final List<String> audios = [
+final List<String> audios1 = [
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_001.mp3",
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_002.mp3",
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_003.mp3",
@@ -9,6 +9,9 @@ final List<String> audios = [
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_008.mp3",
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_009.mp3",
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_010.mp3",
+];
+
+final List<String> audios2 = [
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_011.mp3",
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_012.mp3",
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_013.mp3",
@@ -21,7 +24,7 @@ final List<String> audios = [
   "http://files.alhadis.ru/audio/abu_yahya/aqida/kitabut_tauheed/kitabut_tauheed_020.mp3",
 ];
 
-final List<String> audioNames = [
+final List<String> audioNames1 = [
   "001",
   "002",
   "003",
@@ -32,6 +35,9 @@ final List<String> audioNames = [
   "008",
   "009",
   "010",
+];
+
+final List<String> audioNames2 = [
   "011",
   "012",
   "013",
@@ -43,3 +49,4 @@ final List<String> audioNames = [
   "019",
   "020",
 ];
+

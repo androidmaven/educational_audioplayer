@@ -1,9 +1,11 @@
 import 'package:educational_audioplayer/ui/bottom_player.dart';
 import 'package:flutter/material.dart';
 
-import 'audio_template.dart';
-
 class AudioScreen extends StatefulWidget {
+  final List<String> audios;
+  final List<String> audioNames;
+  AudioScreen(this.audios, this.audioNames);
+
   @override
   _AudioScreenState createState() => _AudioScreenState();
 }
@@ -19,16 +21,16 @@ class _AudioScreenState extends State<AudioScreen> {
 
   Widget _buildAudioItem(BuildContext context, int index) {
     return ListTile(
-      title: Text(audioNames[index]),
+      title: Text(widget.audioNames[index]),
       onTap: () {
         bottomPlayer.show();
         bottomPlayer.play(
-            urls: audios,
+            urls: widget.audios,
             index: index,
-            names: audioNames,
+            names: widget.audioNames,
             lecturerName: 'Арсен абу Яхья (Шарх шейха аль-Усеймина)',
             chapterName:
-                'О достоинстве таухида, и о том, что он искупает грехи');
+                'Глава 2. О достоинстве таухида, и о том, что он искупает грехи');
       },
     );
   }
@@ -39,7 +41,7 @@ class _AudioScreenState extends State<AudioScreen> {
             appBar: AppBar(title: Text('educational_audio')),
             body: ListView.builder(
               itemBuilder: _buildAudioItem,
-              itemCount: audios.length,
+              itemCount: widget.audios.length,
             ),
             bottomNavigationBar: bottomPlayer,
           );

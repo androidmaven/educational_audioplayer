@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../util/constants.dart';
-import '../util/player.dart';
+import 'package:educational_audioplayer/ui/common_player.dart';
 
 _BottomSheetPlayerState _playerState;
 
-class BottomPlayer extends Player {
+class BottomPlayer extends CommonPlayer {
   play(
       {List<String> urls,
       int index,
@@ -39,7 +39,7 @@ class BottomPlayer extends Player {
   }
 }
 
-class _BottomSheetPlayerState extends PlayerState {
+class _BottomSheetPlayerState extends CommonPlayerState {
   bool isHidden = true;
 
   hide() {
@@ -129,7 +129,7 @@ class _BottomSheetPlayerState extends PlayerState {
                         color: Theme.of(context).accentColor),
                     IconButton(
                         onPressed: () {
-                          changePosition(-10);
+                          addSecondsToPosition(-10);
                         },
                         iconSize: iconSize,
                         icon: Icon(Icons.replay_10),
@@ -150,7 +150,7 @@ class _BottomSheetPlayerState extends PlayerState {
                         color: Theme.of(context).accentColor),
                     IconButton(
                         onPressed: () {
-                          changePosition(10);
+                          addSecondsToPosition(10);
                         },
                         iconSize: iconSize,
                         icon: Icon(Icons.forward_10),

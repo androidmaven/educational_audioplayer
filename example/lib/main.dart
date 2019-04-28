@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'audio_screen.dart';
+import 'audio_template.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -15,16 +16,27 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('educational_audio_initial_screen')),
       body: Center(
-        child: Text('Press button to open audio screen'),
-      ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon((Icons.audiotrack)),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AudioScreen()),
-            );
-          }),
+        child: Column(children: <Widget>[
+          ListTile(
+            title: Text('1'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AudioScreen(audios1, audioNames1)),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('2'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AudioScreen(audios2, audioNames2)),
+              );
+            },
+          )
+        ],),
+      )
     );
   }
 }
