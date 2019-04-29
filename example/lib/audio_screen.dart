@@ -1,3 +1,4 @@
+import 'package:educational_audioplayer/ui/audio_loader.dart';
 import 'package:educational_audioplayer/ui/bottom_player.dart';
 import 'package:flutter/material.dart';
 
@@ -38,12 +39,26 @@ class _AudioScreenState extends State<AudioScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            appBar: AppBar(title: Text('educational_audio')),
-            body: ListView.builder(
-              itemBuilder: _buildAudioItem,
-              itemCount: widget.audios.length,
-            ),
-            bottomNavigationBar: bottomPlayer,
-          );
+      appBar: AppBar(
+        title: Text('educational_audio'),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                deleteAudios(context: context, urls: widget.audios);
+              }),
+          IconButton(
+              icon: Icon(Icons.cloud_download),
+              onPressed: () {
+                loadAudios(context: context, urls: widget.audios);
+              })
+        ],
+      ),
+      body: ListView.builder(
+        itemBuilder: _buildAudioItem,
+        itemCount: widget.audios.length,
+      ),
+      bottomNavigationBar: bottomPlayer,
+    );
   }
 }

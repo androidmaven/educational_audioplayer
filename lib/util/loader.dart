@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 
 typedef void OnError(Exception exception);
 
@@ -31,4 +32,10 @@ Future<String> loadFile({String url, String path, renewParentWidget}) async {
     print('FILE NOT EXIST');
     return null;
   }
+}
+
+Future<String> getLocalPath(String url) async {
+  final dir = await getApplicationDocumentsDirectory();
+  String fileName = url.replaceAll('/', '_').replaceAll(':', '_');
+  return '${dir.path}/$fileName';
 }

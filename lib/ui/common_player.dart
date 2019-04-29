@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../util/loader.dart';
 
@@ -53,22 +52,14 @@ class CommonPlayerState extends State<CommonPlayer> {
     super.dispose();
   }
 
-  Future<String> getLocalPath(String url) async {
-    final dir = await getApplicationDocumentsDirectory();
-    String fileName = url.replaceAll('/', '_').replaceAll(':', '_');
-    return '${dir.path}/$fileName';
-  }
-
   Future loadAudio({String url, String path}) async {
     try {
       setState(() {
-        isLoading = true;
-        print('loading started');
+        print('audio loading started');
       });
       await loadFile(url: url, path: path);
       setState(() {
-        print('loading ended');
-        isLoading = false;
+        print('audio loading ended');
       });
     } on Exception {
       print('failed to download audio');
@@ -182,7 +173,7 @@ class CommonPlayerState extends State<CommonPlayer> {
     setState(() {
       Duration newPosition =
           Duration(seconds: (position.inSeconds + seconds).toInt());
-      if(newPosition.inSeconds < 0){
+      if (newPosition.inSeconds < 0) {
         newPosition = Duration(seconds: 0);
       }
       if (newPosition <= duration) {
