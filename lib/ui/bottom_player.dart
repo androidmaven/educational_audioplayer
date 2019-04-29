@@ -1,7 +1,7 @@
+import 'package:educational_audioplayer/ui/common_player.dart';
 import 'package:flutter/material.dart';
 
 import '../util/constants.dart';
-import 'package:educational_audioplayer/ui/common_player.dart';
 
 _BottomSheetPlayerState _playerState;
 
@@ -60,39 +60,41 @@ class _BottomSheetPlayerState extends CommonPlayerState {
       visible: !isHidden,
       maintainState: true,
       child: Container(
-        color: Theme.of(context)
-            .unselectedWidgetColor,
-          padding: EdgeInsets.all(playerInset),
+          color: Theme.of(context).unselectedWidgetColor,
+          padding: EdgeInsets.only(left: playerInset, right: playerInset),
           child: Wrap(children: [
             Column(
               children: <Widget>[
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Expanded(child: Text(
-                        audioName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: audioNameSize),
-                      ),),
-
-                  IconButton(icon: Icon(Icons.close, size: closeIconSize,),
-                      onPressed: () {
-                    audioPlayer.stop();
-                    hide();
-                      })
-                ]),
+                      Expanded(
+                        child: Text(
+                          audioName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: audioNameSize),
+                        ),
+                      ),
+                      IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            size: closeIconSize,
+                          ),
+                          onPressed: () {
+                            audioPlayer.stop();
+                            hide();
+                          })
+                    ]),
                 Text(
                   currentChapterName,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: chapterNameSize),
                 ),
-
                 Text(
                   currentLecturerName,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: lecturerNameSize),
-
                 ),
-
                 (duration == null)
                     ? Container()
                     : Column(
@@ -116,7 +118,6 @@ class _BottomSheetPlayerState extends CommonPlayerState {
                           ),
                         ],
                       ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -164,7 +165,6 @@ class _BottomSheetPlayerState extends CommonPlayerState {
                         color: Theme.of(context).accentColor),
                   ],
                 ),
-
               ],
             ),
           ])),
