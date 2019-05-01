@@ -53,7 +53,7 @@ class _LoaderScreenState extends State<LoaderScreen> {
           await loadFile(url: widget.urls[i], path: path);
         } on Exception {
           print('failed to download audios');
-          Navigator.of(context).pop();
+          break;
         }
       }
     }
@@ -71,7 +71,7 @@ class _LoaderScreenState extends State<LoaderScreen> {
           await file.delete();
         } on Exception {
           print('failed to delete audios');
-          Navigator.of(context).pop();
+          break;
         }
       }
     }
