@@ -7,20 +7,87 @@ import '../util/constants.dart';
 import '../util/loader.dart';
 
 loadAudios({context, List<String> urls}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => LoaderScreen(urls: urls)),
-  );
+  _showLoadingConfirmationDialog(context: context, urls: urls);
 }
 
 deleteAudios({context, List<String> urls}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-        builder: (context) => LoaderScreen(
-              urls: urls,
-              delete: true,
-            )),
+  _showDeletionConfirmationDialog(context: context, urls: urls);
+}
+
+void _showLoadingConfirmationDialog({context, List<String> urls}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          loadingConfirmationTitle,
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          loadingConfirmationInfo,
+          textAlign: TextAlign.center,
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(closeDialogButtonText),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text(confirmLoadingButtonText),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoaderScreen(urls: urls)),
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showDeletionConfirmationDialog({context, List<String> urls}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          deletionConfirmationTitle,
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          deletionConfirmationInfo,
+          textAlign: TextAlign.center,
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(closeDialogButtonText),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text(confirmDeletionButtonText),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoaderScreen(
+                          urls: urls,
+                          delete: true,
+                        )),
+              );
+            },
+          ),
+        ],
+      );
+    },
   );
 }
 
