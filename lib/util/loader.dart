@@ -5,32 +5,31 @@ import 'dart:typed_data';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 
-typedef void OnError(Exception exception);
-
-Future<Uint8List> _loadFileBytes(String url, {OnError onError}) async {
+Future<Uint8List> _loadFileBytes(String url) async {
   Uint8List bytes;
   try {
     bytes = await readBytes(url);
-  } on ClientException {
+  } catch (exception) {
+    print('failed to download audio');
     rethrow;
   }
   return bytes;
 }
 
 Future<String> loadFile({String url, String path, renewParentWidget}) async {
-  final bytes = await _loadFileBytes(url,
-      onError: (Exception exception) =>
-          print('loadFile => exception $exception'));
+  print('audio loading started');
+  final bytes = await _loadFileBytes(url);
 
   final file = File(path);
 
   await file.writeAsBytes(bytes);
   if (await file.exists()) {
     print(file.path);
+    print('audio loading ended');
     return file.path;
   } else {
-    print('FILE NOT EXIST');
-    return null;
+    print('file not exist');
+    throw Exception('file not exist');
   }
 }
 

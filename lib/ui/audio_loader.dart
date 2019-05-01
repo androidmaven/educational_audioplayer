@@ -110,6 +110,7 @@ class _LoaderScreenState extends State<LoaderScreen> {
   }
 
   Future _loadAudios() async {
+    bool success = true;
     for (int i = 0; i < widget.urls.length; i++) {
       setState(() {
         _loadingText = '$i / ${widget.urls.length}';
@@ -119,15 +120,19 @@ class _LoaderScreenState extends State<LoaderScreen> {
         try {
           await loadFile(url: widget.urls[i], path: path);
         } on Exception {
-          print('failed to download audios');
+          success = false;
           break;
         }
       }
     }
     Navigator.of(context).pop();
+    if (!success) {
+      showLoadingFailDialog(context);
+    }
   }
 
   Future _deleteAudios() async {
+    bool success = true;
     for (int i = 0; i < widget.urls.length; i++) {
       setState(() {
         _loadingText = '$i / ${widget.urls.length}';
@@ -137,21 +142,52 @@ class _LoaderScreenState extends State<LoaderScreen> {
         try {
           await file.delete();
         } on Exception {
-          print('failed to delete audios');
-          break;
+          success = false;
         }
       }
     }
     Navigator.of(context).pop();
+    if (!success) {
+      showDeletionFailDialog(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-              widget.delete ? resourceDeleteAudios : resourceDownloadAudios),
+          title: Text(widget.delete ? deleteAudiosTitle : downloadAudiosTitle),
         ),
         body: ProgressHUD(text: _loadingText));
   }
+}
+
+void showLoadingFailDialog(context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+          title: Text(
+            loadingFailedDialogTitle,
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            loadingFailedDialogInfo,
+            textAlign: TextAlign.center,
+          ));
+    },
+  );
+}
+
+void showDeletionFailDialog(context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+          content: Text(
+        deletionFailedDialogInfo,
+        textAlign: TextAlign.center,
+      ));
+    },
+  );
 }

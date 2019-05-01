@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
 
+import '../util/constants.dart';
 import '../util/loader.dart';
+import 'audio_loader.dart';
 
 List<String> currentAudioUrls = [];
 List<String> currentAudioNames = [];
@@ -25,7 +27,6 @@ class CommonPlayerState extends State<CommonPlayer> {
   StreamSubscription audioPlayerStateSubscription;
   Duration duration;
   Duration position;
-  bool isLoading = false;
   String audioName = '';
 
   AudioPlayerState playerState = AudioPlayerState.STOPPED;
@@ -54,15 +55,9 @@ class CommonPlayerState extends State<CommonPlayer> {
 
   Future loadAudio({String url, String path}) async {
     try {
-      setState(() {
-        print('audio loading started');
-      });
       await loadFile(url: url, path: path);
-      setState(() {
-        print('audio loading ended');
-      });
     } on Exception {
-      print('failed to download audio');
+      showLoadingFailDialog(context);
     }
   }
 
@@ -92,9 +87,7 @@ class CommonPlayerState extends State<CommonPlayer> {
       _playLocal(path);
     } else {
       _playNetwork(urls[index]);
-      if (!isLoading) {
-        loadAudio(url: urls[index], path: path);
-      }
+      loadAudio(url: urls[index], path: path);
     }
   }
 
@@ -233,15 +226,23 @@ class CommonPlayerState extends State<CommonPlayer> {
   }
 
   Future _playNetwork(String url) async {
-    await audioPlayer.play(url);
-    setState(() {
-      playerState = AudioPlayerState.PLAYING;
-    });
+    try {
+      await audioPlayer.play(url);
+      setState(() {
+        playerState = AudioPlayerState.PLAYING;
+      });
+    } on Exception {
+      _showPlayFailDialog(context);
+    }
   }
 
   Future _playLocal(String path) async {
-    await audioPlayer.play(path, isLocal: true);
-    setState(() => playerState = AudioPlayerState.PLAYING);
+    try {
+      await audioPlayer.play(path, isLocal: true);
+      setState(() => playerState = AudioPlayerState.PLAYING);
+    } on Exception {
+      _showPlayFailDialog(context);
+    }
   }
 
   _onStop() {
@@ -258,5 +259,22 @@ class CommonPlayerState extends State<CommonPlayer> {
     } else {
       _onStop();
     }
+  }
+
+  void _showPlayFailDialog(context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text(
+              playFailedDialogTitle,
+              textAlign: TextAlign.center,
+            ),
+            content: Text(
+              playFailedDialogInfo,
+              textAlign: TextAlign.center,
+            ));
+      },
+    );
   }
 }
