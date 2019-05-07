@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
 
   audioplayer: ^00.5.2
+  audio_service: ^0.1.0
   http: ^00.12.0+2
   path_provider: ^00.5.0+1
   progress_hud: ^1.1.0
