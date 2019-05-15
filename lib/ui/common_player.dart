@@ -42,7 +42,7 @@ class CommonPlayerState extends State<CommonPlayer> {
   @override
   void initState() {
     super.initState();
-    initAudioPlayer();
+    _initAudioPlayer();
   }
 
   @override
@@ -53,7 +53,7 @@ class CommonPlayerState extends State<CommonPlayer> {
     super.dispose();
   }
 
-  Future loadAudio({String url, String path}) async {
+  Future _loadAudio({String url, String path}) async {
     try {
       await loadFile(url: url, path: path);
     } on Exception {
@@ -80,14 +80,14 @@ class CommonPlayerState extends State<CommonPlayer> {
     currentChapterName = chapterName;
     currentLecturerName = lecturerName;
 
-    updateName(names[index]);
+    _updateName(names[index]);
 
     String path = await getLocalPath(urls[index]);
     if ((await File(path).exists())) {
       _playLocal(path);
     } else {
       _playNetwork(urls[index]);
-      loadAudio(url: urls[index], path: path);
+      _loadAudio(url: urls[index], path: path);
     }
   }
 
@@ -186,7 +186,7 @@ class CommonPlayerState extends State<CommonPlayer> {
     });
   }
 
-  updateName(String name) {
+  _updateName(String name) {
     setState(() {
       audioName = name;
     });
@@ -197,7 +197,7 @@ class CommonPlayerState extends State<CommonPlayer> {
     return Container();
   }
 
-  initAudioPlayer() {
+  _initAudioPlayer() {
     audioPlayer = AudioPlayer();
     positionSubscription = audioPlayer.onAudioPositionChanged
         .listen((p) => setState(() => position = p));
