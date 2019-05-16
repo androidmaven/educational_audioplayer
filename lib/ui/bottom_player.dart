@@ -16,7 +16,7 @@ class BottomPlayer extends CommonPlayer {
         urls[index] != currentAudioUrls[currentAudioIndex]) {
       _playerState.stop();
     }
-    _playerState.play(
+    _playerState.start(
         urls: urls,
         index: index,
         names: names,
@@ -81,7 +81,7 @@ class _BottomPlayerState extends CommonPlayerState {
                             size: closeIconSize,
                           ),
                           onPressed: () {
-                            audioPlayer.stop();
+                            player.stop();
                             hide();
                           })
                     ]),
@@ -137,12 +137,7 @@ class _BottomPlayerState extends CommonPlayerState {
                         color: Theme.of(context).accentColor),
                     IconButton(
                         onPressed: () {
-                          isPlaying
-                              ? pause()
-                              : play(
-                                  urls: currentAudioUrls,
-                                  index: currentAudioIndex,
-                                  names: currentAudioNames);
+                          isPlaying ? pause() : play();
                         },
                         iconSize: iconSize,
                         icon: isPlaying

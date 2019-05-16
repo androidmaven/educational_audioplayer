@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
 
 import '../util/constants.dart';
 import '../util/loader.dart';
 import 'audio_loader.dart';
+import "audio_service_player.dart";
 
 List<String> currentAudioUrls = [];
 List<String> currentAudioNames = [];
@@ -21,8 +23,12 @@ class CommonPlayer extends StatefulWidget {
   }
 }
 
-class CommonPlayerState extends State<CommonPlayer> {
-  AudioPlayer audioPlayer;
+class CommonPlayerState extends State<CommonPlayer>
+    with WidgetsBindingObserver {
+  PlaybackState _state;
+  StreamSubscription _playbackStateSubscription;
+
+  AudioServicePlayer player;
   StreamSubscription positionSubscription;
   StreamSubscription audioPlayerStateSubscription;
   Duration duration;
@@ -43,25 +49,55 @@ class CommonPlayerState extends State<CommonPlayer> {
   void initState() {
     super.initState();
     _initAudioPlayer();
+    WidgetsBinding.instance.addObserver(this);
+    connect();
   }
 
   @override
   void dispose() {
     positionSubscription.cancel();
     audioPlayerStateSubscription.cancel();
-    audioPlayer.stop();
+    AudioService.stop();
+    disconnect();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  Future _loadAudio({String url, String path}) async {
-    try {
-      await loadFile(url: url, path: path);
-    } on Exception {
-      showLoadingFailDialog(context);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        connect();
+        break;
+      case AppLifecycleState.paused:
+        disconnect();
+        break;
+      default:
+        break;
     }
   }
 
-  Future play(
+  void connect() async {
+    await AudioService.connect();
+    if (_playbackStateSubscription == null) {
+      _playbackStateSubscription = AudioService.playbackStateStream
+          .listen((PlaybackState playbackState) {
+        setState(() {
+          _state = playbackState;
+        });
+      });
+    }
+  }
+
+  void disconnect() {
+    if (_playbackStateSubscription != null) {
+      _playbackStateSubscription.cancel();
+      _playbackStateSubscription = null;
+    }
+    AudioService.disconnect();
+  }
+
+  Future start(
       {List<String> urls,
       int index,
       List<String> names,
@@ -84,20 +120,29 @@ class CommonPlayerState extends State<CommonPlayer> {
 
     String path = await getLocalPath(urls[index]);
     if ((await File(path).exists())) {
-      _playLocal(path);
+      _startLocal(path);
     } else {
-      _playNetwork(urls[index]);
+      _startNetwork(urls[index]);
       _loadAudio(url: urls[index], path: path);
     }
   }
 
+  Future play() async {
+    String path = await getLocalPath(currentAudioUrls[currentAudioIndex]);
+    if ((await File(path).exists())) {
+      _playLocal(path);
+    } else {
+      _playNetwork(currentAudioUrls[currentAudioIndex]);
+    }
+  }
+
   Future pause() async {
-    await audioPlayer.pause();
+    await AudioService.pause();
     setState(() => playerState = AudioPlayerState.PAUSED);
   }
 
   Future stop() async {
-    await audioPlayer.stop();
+    await AudioService.stop();
     setState(() {
       playerState = AudioPlayerState.STOPPED;
       position = Duration();
@@ -107,28 +152,28 @@ class CommonPlayerState extends State<CommonPlayer> {
   Future playNext() async {
     if (currentAudioIndex + 1 < currentAudioUrls.length) {
       if (isPlaying) {
-        await audioPlayer.stop();
+        await AudioService.stop();
         setState(() {
           duration = Duration(seconds: 0);
           position = Duration(seconds: 0);
         });
         currentAudioIndex++;
-        play(
+        start(
             urls: currentAudioUrls,
             index: currentAudioIndex,
             names: currentAudioNames);
       } else {
-        await audioPlayer.stop();
+        await AudioService.stop();
         setState(() {
           duration = Duration(seconds: 0);
           position = Duration(seconds: 0);
         });
         currentAudioIndex++;
-        await play(
+        await start(
             urls: currentAudioUrls,
             index: currentAudioIndex,
             names: currentAudioNames);
-        await audioPlayer.stop();
+        await AudioService.stop();
       }
     }
   }
@@ -136,28 +181,28 @@ class CommonPlayerState extends State<CommonPlayer> {
   Future playPrevious() async {
     if (currentAudioIndex - 1 > -1) {
       if (isPlaying) {
-        await audioPlayer.stop();
+        await AudioService.stop();
         setState(() {
           duration = Duration(seconds: 0);
           position = Duration(seconds: 0);
         });
         currentAudioIndex--;
-        play(
+        start(
             urls: currentAudioUrls,
             index: currentAudioIndex,
             names: currentAudioNames);
       } else {
-        await audioPlayer.stop();
+        await AudioService.stop();
         setState(() {
           duration = Duration(seconds: 0);
           position = Duration(seconds: 0);
         });
         currentAudioIndex--;
-        await play(
+        await start(
             urls: currentAudioUrls,
             index: currentAudioIndex,
             names: currentAudioNames);
-        await audioPlayer.stop();
+        await AudioService.stop();
       }
     }
   }
@@ -170,7 +215,7 @@ class CommonPlayerState extends State<CommonPlayer> {
         newPosition = Duration(seconds: 0);
       }
       if (newPosition <= duration) {
-        audioPlayer.seek(newPosition.inSeconds.toDouble());
+        AudioService.seekTo(newPosition.inSeconds);
         position = newPosition;
       }
     });
@@ -180,7 +225,7 @@ class CommonPlayerState extends State<CommonPlayer> {
     setState(() {
       Duration newPosition = Duration(milliseconds: value.toInt());
       if (newPosition <= duration) {
-        audioPlayer.seek(newPosition.inSeconds.toDouble());
+        AudioService.seekTo(newPosition.inSeconds);
         position = Duration(milliseconds: value.toInt());
       }
     });
@@ -198,12 +243,12 @@ class CommonPlayerState extends State<CommonPlayer> {
   }
 
   _initAudioPlayer() {
-    audioPlayer = AudioPlayer();
-    positionSubscription = audioPlayer.onAudioPositionChanged
+    player = AudioServicePlayer();
+    positionSubscription = player.onAudioPositionChanged
         .listen((p) => setState(() => position = p));
-    audioPlayerStateSubscription = audioPlayer.onPlayerStateChanged.listen((s) {
+    audioPlayerStateSubscription = player.onPlayerStateChanged.listen((s) {
       if (s == AudioPlayerState.PLAYING) {
-        setState(() => duration = audioPlayer.duration);
+        setState(() => duration = player.duration);
       } else if (s == AudioPlayerState.COMPLETED) {
         setState(() {
           duration = Duration(seconds: 0);
@@ -225,9 +270,19 @@ class CommonPlayerState extends State<CommonPlayer> {
     });
   }
 
+  Future _loadAudio({String url, String path}) async {
+    try {
+      await loadFile(url: url, path: path);
+    } on Exception {
+      showLoadingFailDialog(context);
+    }
+  }
+
   Future _playNetwork(String url) async {
     try {
-      await audioPlayer.play(url);
+      updateAudioServiceStream(url);
+
+      await AudioService.play();
       setState(() {
         playerState = AudioPlayerState.PLAYING;
       });
@@ -238,7 +293,45 @@ class CommonPlayerState extends State<CommonPlayer> {
 
   Future _playLocal(String path) async {
     try {
-      await audioPlayer.play(path, isLocal: true);
+      updateAudioServiceStream(path, isLocal: true);
+
+      await AudioService.play();
+      setState(() => playerState = AudioPlayerState.PLAYING);
+    } on Exception {
+      _showPlayFailDialog(context);
+    }
+  }
+
+  Future _startNetwork(String url) async {
+    try {
+      updateAudioServiceStream(url);
+
+      await AudioService.start(
+        backgroundTask: backgroundAudioPlayerTask,
+        resumeOnClick: true,
+        androidNotificationChannelName: 'Audio Service qqqqqq',
+        notificationColor: 0xFF2196f3,
+        androidNotificationIcon: 'mipmap/ic_launcher',
+      );
+      setState(() {
+        playerState = AudioPlayerState.PLAYING;
+      });
+    } on Exception {
+      _showPlayFailDialog(context);
+    }
+  }
+
+  Future _startLocal(String path) async {
+    try {
+      updateAudioServiceStream(path, isLocal: true);
+
+      await AudioService.start(
+        backgroundTask: backgroundAudioPlayerTask,
+        resumeOnClick: true,
+        androidNotificationChannelName: 'Audio Service qqqqqq',
+        notificationColor: 0xFF2196f3,
+        androidNotificationIcon: 'mipmap/ic_launcher',
+      );
       setState(() => playerState = AudioPlayerState.PLAYING);
     } on Exception {
       _showPlayFailDialog(context);
@@ -252,7 +345,7 @@ class CommonPlayerState extends State<CommonPlayer> {
   _onComplete() {
     if (currentAudioIndex + 1 < currentAudioUrls.length) {
       currentAudioIndex++;
-      play(
+      start(
           urls: currentAudioUrls,
           index: currentAudioIndex,
           names: currentAudioNames);
