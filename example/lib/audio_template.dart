@@ -50,3 +50,28 @@ final List<String> audioNames2 = [
   "020",
 ];
 
+final List<num> audioSizes_1 = [
+  1.5,
+  2,
+  3,
+  4,
+  4,
+  7,
+  1,
+  1,
+  2,
+  3,
+];
+
+final List<num> audioSizes_2 = [
+  2.5,
+  2,
+  3,
+  4,
+  4,
+  7,
+  1,
+  1,
+  2,
+  3,
+];

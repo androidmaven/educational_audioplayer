@@ -8,12 +8,15 @@ const double closeIconSize = 32.0;
 
 const String downloadAudiosTitle = 'Загрузка файлов';
 const String deleteAudiosTitle = 'Удаление файлов';
-const String loadingConfirmationTitle = 'Уверены, что хотите скачать лекции?';
-const String deletionConfirmationTitle = 'Уверены, что хотите удалить лекции?';
+const String loadingConfirmationTitle_1 =
+    'Уверены, что хотите скачать аудиофайлы \n(';
+const String loadingConfirmationTitle_2 = ' Мбайт)';
+const String deletionConfirmationTitle =
+    'Уверены, что хотите удалить аудиофайлы?';
 const String loadingConfirmationInfo =
-    'При медленном интернете или большом количестве скачиваемых лекций это может занять значительное время (час и более)';
+    'При медленном интернете или большом количестве скачиваемых файлов это может занять значительное время (час и более)';
 const String deletionConfirmationInfo =
-    'Для повторного прослушивания лекций их придется скачать заново';
+    'Для повторного прослушивания аудиофайлов их придется скачать заново';
 const String confirmLoadingButtonText = 'Скачать';
 const String confirmDeletionButtonText = 'Удалить';
 const String closeDialogButtonText = 'Отмена';

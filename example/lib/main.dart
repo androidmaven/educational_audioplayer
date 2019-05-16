@@ -14,29 +14,34 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('educational_audio_initial_screen')),
-      body: Center(
-        child: Column(children: <Widget>[
-          ListTile(
-            title: Text('1'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AudioScreen(audios1, audioNames1)),
-              );
-            },
+        appBar: AppBar(title: Text('educational_audio_initial_screen')),
+        body: Center(
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text('1'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AudioScreen(audios1, audioNames1, audioSizes_1)),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('2'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AudioScreen(audios2, audioNames2, audioSizes_2)),
+                  );
+                },
+              )
+            ],
           ),
-          ListTile(
-            title: Text('2'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AudioScreen(audios2, audioNames2)),
-              );
-            },
-          )
-        ],),
-      )
-    );
+        ));
   }
 }

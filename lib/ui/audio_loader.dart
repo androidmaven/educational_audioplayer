@@ -6,21 +6,32 @@ import 'package:progress_hud/progress_hud.dart';
 import '../util/constants.dart';
 import '../util/loader.dart';
 
-loadAudios({context, List<String> urls}) {
-  _showLoadingConfirmationDialog(context: context, urls: urls);
+loadAudios({context, List<String> urls, sizes}) {
+  _showLoadingConfirmationDialog(context: context, urls: urls, sizes: sizes);
 }
 
 deleteAudios({context, List<String> urls}) {
   _showDeletionConfirmationDialog(context: context, urls: urls);
 }
 
-void _showLoadingConfirmationDialog({context, List<String> urls}) {
+double sum(List<num> sizes) {
+  num sum = 0;
+  for (num e in sizes) {
+    sum += e;
+  }
+  return sum;
+}
+
+void _showLoadingConfirmationDialog(
+    {context, List<String> urls, List<num> sizes}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(
-          loadingConfirmationTitle,
+          loadingConfirmationTitle_1 +
+              sum(sizes).toString() +
+              loadingConfirmationTitle_2,
           textAlign: TextAlign.center,
         ),
         content: Text(

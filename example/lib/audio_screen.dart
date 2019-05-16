@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 class AudioScreen extends StatefulWidget {
   final List<String> audios;
   final List<String> audioNames;
-  AudioScreen(this.audios, this.audioNames);
+  final List<num> audioSizes;
+  AudioScreen(this.audios, this.audioNames, this.audioSizes);
 
   @override
   _AudioScreenState createState() => _AudioScreenState();
@@ -50,7 +51,10 @@ class _AudioScreenState extends State<AudioScreen> {
           IconButton(
               icon: Icon(Icons.cloud_download),
               onPressed: () {
-                loadAudios(context: context, urls: widget.audios);
+                loadAudios(
+                    context: context,
+                    urls: widget.audios,
+                    sizes: widget.audioSizes);
               })
         ],
       ),
