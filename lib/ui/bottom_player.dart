@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../util/constants.dart';
 
-_BottomSheetPlayerState _playerState;
+_BottomPlayerState _playerState;
 
 class BottomPlayer extends CommonPlayer {
   play(
@@ -33,13 +33,13 @@ class BottomPlayer extends CommonPlayer {
   }
 
   @override
-  _BottomSheetPlayerState createState() {
-    _playerState = _BottomSheetPlayerState();
+  _BottomPlayerState createState() {
+    _playerState = _BottomPlayerState();
     return _playerState;
   }
 }
 
-class _BottomSheetPlayerState extends CommonPlayerState {
+class _BottomPlayerState extends CommonPlayerState {
   bool isHidden = true;
 
   hide() {
