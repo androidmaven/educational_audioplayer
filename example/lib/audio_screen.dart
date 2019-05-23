@@ -1,12 +1,11 @@
 import 'package:educational_audioplayer/ui/audio_loader.dart';
 import 'package:educational_audioplayer/ui/bottom_player.dart';
+import 'package:educational_audioplayer/util/audio.dart';
 import 'package:flutter/material.dart';
 
 class AudioScreen extends StatefulWidget {
-  final List<String> audios;
-  final List<String> audioNames;
-  final List<num> audioSizes;
-  AudioScreen(this.audios, this.audioNames, this.audioSizes);
+  final List<Audio> audios;
+  AudioScreen(this.audios);
 
   @override
   _AudioScreenState createState() => _AudioScreenState();
@@ -18,21 +17,15 @@ class _AudioScreenState extends State<AudioScreen> {
   @override
   void initState() {
     super.initState();
-    bottomPlayer = BottomPlayer();
+    bottomPlayer = BottomPlayer(setLastAudioMethod: setLastPlayedAudio);
   }
 
   Widget _buildAudioItem(BuildContext context, int index) {
     return ListTile(
-      title: Text(widget.audioNames[index]),
+      title: Text(widget.audios[index].audioName),
       onTap: () {
         bottomPlayer.show();
-        bottomPlayer.play(
-            urls: widget.audios,
-            index: index,
-            names: widget.audioNames,
-            lecturerName: 'Арсен абу Яхья (Шарх шейха аль-Усеймина)',
-            chapterName:
-                'Глава 2. О достоинстве таухида, и о том, что он искупает грехи');
+        bottomPlayer.play(widget.audios, index);
       },
     );
   }
@@ -46,15 +39,12 @@ class _AudioScreenState extends State<AudioScreen> {
           IconButton(
               icon: Icon(Icons.delete),
               onPressed: () {
-                deleteAudios(context: context, urls: widget.audios);
+                deleteAudios(context: context, audios: widget.audios);
               }),
           IconButton(
               icon: Icon(Icons.cloud_download),
               onPressed: () {
-                loadAudios(
-                    context: context,
-                    urls: widget.audios,
-                    sizes: widget.audioSizes);
+                loadAudios(context: context, audios: widget.audios);
               })
         ],
       ),
@@ -65,4 +55,6 @@ class _AudioScreenState extends State<AudioScreen> {
       bottomNavigationBar: bottomPlayer,
     );
   }
+
+  setLastPlayedAudio(Audio audio, int audioIndex) {}
 }

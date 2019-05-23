@@ -4,17 +4,18 @@ import 'dart:io';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
 
+import '../util/audio.dart';
 import '../util/constants.dart';
 import '../util/loader.dart';
 import 'audio_loader.dart';
 
-List<String> currentAudioUrls = [];
-List<String> currentAudioNames = [];
-int currentAudioIndex;
-String currentChapterName = '';
-String currentLecturerName = '';
+List<Audio> currentAudios = emptyAudios;
+int currentAudioIndex = 0;
 
 class CommonPlayer extends StatefulWidget {
+  final Function setLastAudioMethod;
+  CommonPlayer({this.setLastAudioMethod});
+
   @override
   CommonPlayerState createState() {
     return CommonPlayerState();
@@ -27,7 +28,6 @@ class CommonPlayerState extends State<CommonPlayer> {
   StreamSubscription audioPlayerStateSubscription;
   Duration duration;
   Duration position;
-  String audioName = '';
 
   AudioPlayerState playerState = AudioPlayerState.STOPPED;
 
@@ -61,33 +61,19 @@ class CommonPlayerState extends State<CommonPlayer> {
     }
   }
 
-  Future play(
-      {List<String> urls,
-      int index,
-      List<String> names,
-      String lecturerName,
-      String chapterName}) async {
-    if (lecturerName == null) {
-      lecturerName = currentLecturerName;
-    }
-    if (chapterName == null) {
-      chapterName = currentChapterName;
-    }
-
-    currentAudioUrls = urls;
-    currentAudioNames = names;
+  Future play(List<Audio> audios, int index) async {
+    currentAudios = audios;
     currentAudioIndex = index;
-    currentChapterName = chapterName;
-    currentLecturerName = lecturerName;
 
-    _updateName(names[index]);
+    widget.setLastAudioMethod(audios[index], index);
+    _updateName(audios[index].authorName);
 
-    String path = await getLocalPath(urls[index]);
+    String path = await getLocalPath(audios[index].url);
     if ((await File(path).exists())) {
       _playLocal(path);
     } else {
-      _playNetwork(urls[index]);
-      _loadAudio(url: urls[index], path: path);
+      _playNetwork(audios[index].url);
+      _loadAudio(url: audios[index].url, path: path);
     }
   }
 
@@ -105,7 +91,7 @@ class CommonPlayerState extends State<CommonPlayer> {
   }
 
   Future playNext() async {
-    if (currentAudioIndex + 1 < currentAudioUrls.length) {
+    if (currentAudioIndex + 1 < currentAudios.length) {
       if (isPlaying) {
         await audioPlayer.stop();
         setState(() {
@@ -113,10 +99,7 @@ class CommonPlayerState extends State<CommonPlayer> {
           position = Duration(seconds: 0);
         });
         currentAudioIndex++;
-        play(
-            urls: currentAudioUrls,
-            index: currentAudioIndex,
-            names: currentAudioNames);
+        play(currentAudios, currentAudioIndex);
       } else {
         await audioPlayer.stop();
         setState(() {
@@ -124,10 +107,7 @@ class CommonPlayerState extends State<CommonPlayer> {
           position = Duration(seconds: 0);
         });
         currentAudioIndex++;
-        await play(
-            urls: currentAudioUrls,
-            index: currentAudioIndex,
-            names: currentAudioNames);
+        await play(currentAudios, currentAudioIndex);
         await audioPlayer.stop();
       }
     }
@@ -142,10 +122,7 @@ class CommonPlayerState extends State<CommonPlayer> {
           position = Duration(seconds: 0);
         });
         currentAudioIndex--;
-        play(
-            urls: currentAudioUrls,
-            index: currentAudioIndex,
-            names: currentAudioNames);
+        play(currentAudios, currentAudioIndex);
       } else {
         await audioPlayer.stop();
         setState(() {
@@ -153,10 +130,7 @@ class CommonPlayerState extends State<CommonPlayer> {
           position = Duration(seconds: 0);
         });
         currentAudioIndex--;
-        await play(
-            urls: currentAudioUrls,
-            index: currentAudioIndex,
-            names: currentAudioNames);
+        await play(currentAudios, currentAudioIndex);
         await audioPlayer.stop();
       }
     }
@@ -187,9 +161,7 @@ class CommonPlayerState extends State<CommonPlayer> {
   }
 
   _updateName(String name) {
-    setState(() {
-      audioName = name;
-    });
+    setState(() {});
   }
 
   @override
@@ -250,12 +222,9 @@ class CommonPlayerState extends State<CommonPlayer> {
   }
 
   _onComplete() {
-    if (currentAudioIndex + 1 < currentAudioUrls.length) {
+    if (currentAudioIndex + 1 < currentAudios.length) {
       currentAudioIndex++;
-      play(
-          urls: currentAudioUrls,
-          index: currentAudioIndex,
-          names: currentAudioNames);
+      play(currentAudios, currentAudioIndex);
     } else {
       _onStop();
     }

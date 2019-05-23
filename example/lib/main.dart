@@ -24,8 +24,7 @@ class Home extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            AudioScreen(audios1, audioNames1, audioSizes_1)),
+                        builder: (context) => AudioScreen(audios1)),
                   );
                 },
               ),
@@ -35,8 +34,7 @@ class Home extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            AudioScreen(audios2, audioNames2, audioSizes_2)),
+                        builder: (context) => AudioScreen(audios2)),
                   );
                 },
               )

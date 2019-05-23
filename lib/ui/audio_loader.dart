@@ -3,34 +3,34 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:progress_hud/progress_hud.dart';
 
+import '../util/audio.dart';
 import '../util/constants.dart';
 import '../util/loader.dart';
 
-loadAudios({context, List<String> urls, sizes}) {
-  _showLoadingConfirmationDialog(context: context, urls: urls, sizes: sizes);
+loadAudios({context, List<Audio> audios}) {
+  _showLoadingConfirmationDialog(context: context, audios: audios);
 }
 
-deleteAudios({context, List<String> urls}) {
-  _showDeletionConfirmationDialog(context: context, urls: urls);
+deleteAudios({context, List<Audio> audios}) {
+  _showDeletionConfirmationDialog(context: context, audios: audios);
 }
 
-double sum(List<num> sizes) {
+num sizesSum(List<Audio> audios) {
   num sum = 0;
-  for (num e in sizes) {
-    sum += e;
+  for (int i = 0; i < audios.length; i++) {
+    sum += audios[i].audioSize;
   }
   return sum;
 }
 
-void _showLoadingConfirmationDialog(
-    {context, List<String> urls, List<num> sizes}) {
+void _showLoadingConfirmationDialog({context, List<Audio> audios}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(
           loadingConfirmationTitle_1 +
-              sum(sizes).toString() +
+              sizesSum(audios).toString() +
               loadingConfirmationTitle_2,
           textAlign: TextAlign.center,
         ),
@@ -52,7 +52,7 @@ void _showLoadingConfirmationDialog(
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LoaderScreen(urls: urls)),
+                    builder: (context) => LoaderScreen(audios: audios)),
               );
             },
           ),
@@ -62,7 +62,7 @@ void _showLoadingConfirmationDialog(
   );
 }
 
-void _showDeletionConfirmationDialog({context, List<String> urls}) {
+void _showDeletionConfirmationDialog({context, List<Audio> audios}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -90,7 +90,7 @@ void _showDeletionConfirmationDialog({context, List<String> urls}) {
                 context,
                 MaterialPageRoute(
                     builder: (context) => LoaderScreen(
-                          urls: urls,
+                          audios: audios,
                           delete: true,
                         )),
               );
@@ -103,9 +103,9 @@ void _showDeletionConfirmationDialog({context, List<String> urls}) {
 }
 
 class LoaderScreen extends StatefulWidget {
-  final List<String> urls;
+  final List<Audio> audios;
   final bool delete;
-  LoaderScreen({Key key, this.urls, this.delete: false}) : super(key: key);
+  LoaderScreen({Key key, this.audios, this.delete: false}) : super(key: key);
 
   @override
   _LoaderScreenState createState() => _LoaderScreenState();
@@ -122,14 +122,14 @@ class _LoaderScreenState extends State<LoaderScreen> {
 
   Future _loadAudios() async {
     bool success = true;
-    for (int i = 0; i < widget.urls.length; i++) {
+    for (int i = 0; i < widget.audios.length; i++) {
       setState(() {
-        _loadingText = '$i / ${widget.urls.length}';
+        _loadingText = '$i / ${widget.audios.length}';
       });
-      String path = await getLocalPath(widget.urls[i]);
+      String path = await getLocalPath(widget.audios[i].url);
       if (!(await File(path).exists())) {
         try {
-          await loadFile(url: widget.urls[i], path: path);
+          await loadFile(url: widget.audios[i].url, path: path);
         } on Exception {
           success = false;
           break;
@@ -144,11 +144,11 @@ class _LoaderScreenState extends State<LoaderScreen> {
 
   Future _deleteAudios() async {
     bool success = true;
-    for (int i = 0; i < widget.urls.length; i++) {
+    for (int i = 0; i < widget.audios.length; i++) {
       setState(() {
-        _loadingText = '$i / ${widget.urls.length}';
+        _loadingText = '$i / ${widget.audios.length}';
       });
-      File file = File(await getLocalPath(widget.urls[i]));
+      File file = File(await getLocalPath(widget.audios[i].url));
       if (await file.exists()) {
         try {
           await file.delete();

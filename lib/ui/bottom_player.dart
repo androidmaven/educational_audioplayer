@@ -1,31 +1,21 @@
 import 'package:educational_audioplayer/ui/common_player.dart';
 import 'package:flutter/material.dart';
 
+import '../util/audio.dart';
 import '../util/constants.dart';
 
 _BottomPlayerState _playerState;
 
 class BottomPlayer extends CommonPlayer {
-  play(
-      {List<String> urls,
-      int index,
-      List<String> names,
-      String lecturerName,
-      String chapterName}) {
-    if (currentAudioUrls.length > 0 &&
-        urls[index] != currentAudioUrls[currentAudioIndex]) {
+  BottomPlayer({Function setLastAudioMethod})
+      : super(setLastAudioMethod: setLastAudioMethod);
+
+  play(List<Audio> audios, int index) {
+    if (currentAudios.length > 0 &&
+        audios[index].url != currentAudios[currentAudioIndex].url) {
       _playerState.stop();
     }
-    _playerState.play(
-        urls: urls,
-        index: index,
-        names: names,
-        chapterName: chapterName,
-        lecturerName: lecturerName);
-  }
-
-  hide() {
-    _playerState.hide();
+    _playerState.play(audios, index);
   }
 
   show() {
@@ -60,7 +50,7 @@ class _BottomPlayerState extends CommonPlayerState {
       visible: !isHidden,
       maintainState: true,
       child: Container(
-          color: Theme.of(context).unselectedWidgetColor,
+          color: Theme.of(context).highlightColor,
           padding: EdgeInsets.only(left: playerInset, right: playerInset),
           child: Wrap(children: [
             Column(
@@ -70,7 +60,7 @@ class _BottomPlayerState extends CommonPlayerState {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          audioName,
+                          currentAudios[currentAudioIndex].audioName,
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: audioNameSize),
                         ),
@@ -86,12 +76,12 @@ class _BottomPlayerState extends CommonPlayerState {
                           })
                     ]),
                 Text(
-                  currentChapterName,
+                  currentAudios[currentAudioIndex].chapterName,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: chapterNameSize),
                 ),
                 Text(
-                  currentLecturerName,
+                  currentAudios[currentAudioIndex].authorName,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: lecturerNameSize),
                 ),
@@ -139,10 +129,7 @@ class _BottomPlayerState extends CommonPlayerState {
                         onPressed: () {
                           isPlaying
                               ? pause()
-                              : play(
-                                  urls: currentAudioUrls,
-                                  index: currentAudioIndex,
-                                  names: currentAudioNames);
+                              : play(currentAudios, currentAudioIndex);
                         },
                         iconSize: iconSize,
                         icon: isPlaying
