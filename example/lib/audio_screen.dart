@@ -17,7 +17,7 @@ class _AudioScreenState extends State<AudioScreen> {
   @override
   void initState() {
     super.initState();
-    bottomPlayer = BottomPlayer(setLastAudioMethod: setLastPlayedAudio);
+    bottomPlayer = BottomPlayer();
   }
 
   Widget _buildAudioItem(BuildContext context, int index) {
@@ -56,5 +56,5 @@ class _AudioScreenState extends State<AudioScreen> {
     );
   }
 
-  setLastPlayedAudio(Audio audio, int audioIndex) {}
+  setLastPlayedAudio(url) {}
 }

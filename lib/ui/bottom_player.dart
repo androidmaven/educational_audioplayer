@@ -7,15 +7,13 @@ import '../util/constants.dart';
 _BottomPlayerState _playerState;
 
 class BottomPlayer extends CommonPlayer {
-  BottomPlayer({Function setLastAudioMethod})
-      : super(setLastAudioMethod: setLastAudioMethod);
-
-  play(List<Audio> audios, int index) {
+  play(List<Audio> audios, int index, {Function setLastAudioMethodLocal}) {
     if (currentAudios.length > 0 &&
         audios[index].url != currentAudios[currentAudioIndex].url) {
       _playerState.stop();
     }
-    _playerState.play(audios, index);
+    _playerState.play(audios, index,
+        setLastAudioMethodLocal: setLastAudioMethodLocal);
   }
 
   show() {

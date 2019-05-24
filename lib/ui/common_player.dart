@@ -13,9 +13,6 @@ List<Audio> currentAudios = emptyAudios;
 int currentAudioIndex = 0;
 
 class CommonPlayer extends StatefulWidget {
-  final Function setLastAudioMethod;
-  CommonPlayer({this.setLastAudioMethod});
-
   @override
   CommonPlayerState createState() {
     return CommonPlayerState();
@@ -28,6 +25,7 @@ class CommonPlayerState extends State<CommonPlayer> {
   StreamSubscription audioPlayerStateSubscription;
   Duration duration;
   Duration position;
+  Function setLastAudioMethod;
 
   AudioPlayerState playerState = AudioPlayerState.STOPPED;
 
@@ -61,11 +59,15 @@ class CommonPlayerState extends State<CommonPlayer> {
     }
   }
 
-  Future play(List<Audio> audios, int index) async {
+  Future play(List<Audio> audios, int index,
+      {Function setLastAudioMethodLocal}) async {
     currentAudios = audios;
     currentAudioIndex = index;
 
-    widget.setLastAudioMethod(audios[index], index);
+    if (setLastAudioMethodLocal is Function) {
+      setLastAudioMethod = setLastAudioMethodLocal;
+    }
+    setLastAudioMethod(audios[index].url);
     _updateName(audios[index].authorName);
 
     String path = await getLocalPath(audios[index].url);
