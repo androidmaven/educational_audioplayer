@@ -3,17 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:progress_hud/progress_hud.dart';
 
-import '../util/audio.dart';
+import '../player.dart';
 import '../util/constants.dart';
 import '../util/loader.dart';
-
-loadAudios({context, List<Audio> audios}) {
-  _showLoadingConfirmationDialog(context: context, audios: audios);
-}
-
-deleteAudios({context, List<Audio> audios}) {
-  _showDeletionConfirmationDialog(context: context, audios: audios);
-}
 
 num sizesSum(List<Audio> audios) {
   num sum = 0;
@@ -23,7 +15,7 @@ num sizesSum(List<Audio> audios) {
   return sum;
 }
 
-void _showLoadingConfirmationDialog({context, List<Audio> audios}) {
+void showLoadingConfirmationDialog({context, List<Audio> audios}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -62,7 +54,7 @@ void _showLoadingConfirmationDialog({context, List<Audio> audios}) {
   );
 }
 
-void _showDeletionConfirmationDialog({context, List<Audio> audios}) {
+void showDeletionConfirmationDialog({context, List<Audio> audios}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {

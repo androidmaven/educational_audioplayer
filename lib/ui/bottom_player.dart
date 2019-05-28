@@ -1,7 +1,7 @@
 import 'package:educational_audioplayer/ui/common_player.dart';
 import 'package:flutter/material.dart';
 
-import '../util/audio.dart';
+import '../player.dart';
 import '../util/constants.dart';
 
 _BottomPlayerState _playerState;

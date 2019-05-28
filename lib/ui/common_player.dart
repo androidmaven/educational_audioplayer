@@ -4,12 +4,11 @@ import 'dart:io';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
 
-import '../util/audio.dart';
+import '../player.dart';
 import '../util/constants.dart';
 import '../util/loader.dart';
-import 'audio_loader.dart';
 
-List<Audio> currentAudios = emptyAudios;
+List<Audio> currentAudios = [Audio(url: '')];
 int currentAudioIndex = 0;
 
 class CommonPlayer extends StatefulWidget {
@@ -51,14 +50,6 @@ class CommonPlayerState extends State<CommonPlayer> {
     super.dispose();
   }
 
-  Future _loadAudio({String url, String path}) async {
-    try {
-      await loadFile(url: url, path: path);
-    } on Exception {
-      showLoadingFailDialog(context);
-    }
-  }
-
   Future play(List<Audio> audios, int index,
       {Function setLastAudioMethodLocal}) async {
     currentAudios = audios;
@@ -75,7 +66,6 @@ class CommonPlayerState extends State<CommonPlayer> {
       _playLocal(path);
     } else {
       _playNetwork(audios[index].url);
-      _loadAudio(url: audios[index].url, path: path);
     }
   }
 

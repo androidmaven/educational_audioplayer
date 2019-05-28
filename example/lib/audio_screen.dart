@@ -1,6 +1,5 @@
-import 'package:educational_audioplayer/ui/audio_loader.dart';
+import 'package:educational_audioplayer/player.dart';
 import 'package:educational_audioplayer/ui/bottom_player.dart';
-import 'package:educational_audioplayer/util/audio.dart';
 import 'package:flutter/material.dart';
 
 class AudioScreen extends StatefulWidget {

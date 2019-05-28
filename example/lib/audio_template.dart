@@ -1,4 +1,4 @@
-import 'package:educational_audioplayer/util/audio.dart';
+import 'package:educational_audioplayer/player.dart';
 
 final List<Audio> audios1 = [
   Audio(
