@@ -6,6 +6,21 @@ import 'package:progress_hud/progress_hud.dart';
 import '../player.dart';
 import '../util/constants.dart';
 import '../util/loader.dart';
+import '../util/shared_preferences.dart';
+
+loadAudios({context, List<Audio> audios, Function setParentWidgetState}) {
+  showLoadingConfirmationDialog(
+      context: context,
+      audios: audios,
+      setParentWidgetState: setParentWidgetState);
+}
+
+deleteAudios({context, List<Audio> audios, Function setParentWidgetState}) {
+  showDeletionConfirmationDialog(
+      context: context,
+      audios: audios,
+      setParentWidgetState: setParentWidgetState);
+}
 
 num sizesSum(List<Audio> audios) {
   num sum = 0;
@@ -15,7 +30,8 @@ num sizesSum(List<Audio> audios) {
   return sum;
 }
 
-void showLoadingConfirmationDialog({context, List<Audio> audios}) {
+void showLoadingConfirmationDialog(
+    {context, List<Audio> audios, Function setParentWidgetState}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -44,7 +60,9 @@ void showLoadingConfirmationDialog({context, List<Audio> audios}) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LoaderScreen(audios: audios)),
+                    builder: (context) => LoaderScreen(
+                        audios: audios,
+                        setParentWidgetState: setParentWidgetState)),
               );
             },
           ),
@@ -54,7 +72,8 @@ void showLoadingConfirmationDialog({context, List<Audio> audios}) {
   );
 }
 
-void showDeletionConfirmationDialog({context, List<Audio> audios}) {
+void showDeletionConfirmationDialog(
+    {context, List<Audio> audios, Function setParentWidgetState}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -82,9 +101,9 @@ void showDeletionConfirmationDialog({context, List<Audio> audios}) {
                 context,
                 MaterialPageRoute(
                     builder: (context) => LoaderScreen(
-                          audios: audios,
-                          delete: true,
-                        )),
+                        audios: audios,
+                        delete: true,
+                        setParentWidgetState: setParentWidgetState)),
               );
             },
           ),
@@ -97,7 +116,10 @@ void showDeletionConfirmationDialog({context, List<Audio> audios}) {
 class LoaderScreen extends StatefulWidget {
   final List<Audio> audios;
   final bool delete;
-  LoaderScreen({Key key, this.audios, this.delete: false}) : super(key: key);
+  final Function setParentWidgetState;
+  LoaderScreen(
+      {Key key, this.audios, this.delete: false, this.setParentWidgetState})
+      : super(key: key);
 
   @override
   _LoaderScreenState createState() => _LoaderScreenState();
@@ -128,6 +150,12 @@ class _LoaderScreenState extends State<LoaderScreen> {
         }
       }
     }
+    if (success) {
+      markAudiosAsLoaded(widget.audios);
+      if (widget.setParentWidgetState is Function) {
+        widget.setParentWidgetState();
+      }
+    }
     Navigator.of(context).pop();
     if (!success) {
       showLoadingFailDialog(context);
@@ -147,6 +175,12 @@ class _LoaderScreenState extends State<LoaderScreen> {
         } on Exception {
           success = false;
         }
+      }
+    }
+    if (success) {
+      markAudiosAsDeleted(widget.audios);
+      if (widget.setParentWidgetState is Function) {
+        widget.setParentWidgetState();
       }
     }
     Navigator.of(context).pop();
@@ -193,4 +227,43 @@ void showDeletionFailDialog(context) {
       ));
     },
   );
+}
+
+class LoadButton extends StatelessWidget {
+  final BuildContext context;
+  final List<Audio> audios;
+  final Function setParentWidgetState;
+  LoadButton({this.context, this.audios, this.setParentWidgetState});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        icon: Icon(Icons.cloud_download),
+        color: Theme.of(context).accentColor,
+        onPressed: () {
+          loadAudios(
+              context: context,
+              audios: audios,
+              setParentWidgetState: setParentWidgetState);
+        });
+  }
+}
+
+class DeleteButton extends StatelessWidget {
+  final BuildContext context;
+  final List<Audio> audios;
+  final Function setParentWidgetState;
+  DeleteButton({this.context, this.audios, this.setParentWidgetState});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        icon: Icon(Icons.delete, color: Theme.of(context).accentColor),
+        onPressed: () {
+          deleteAudios(
+              context: context,
+              audios: audios,
+              setParentWidgetState: setParentWidgetState);
+        });
+  }
 }

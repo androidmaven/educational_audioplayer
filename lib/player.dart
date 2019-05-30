@@ -1,15 +1,6 @@
-import 'ui/audio_loader.dart';
 import 'ui/bottom_player.dart';
 
 class Player extends BottomPlayer {}
-
-loadAudios({context, List<Audio> audios}) {
-  showLoadingConfirmationDialog(context: context, audios: audios);
-}
-
-deleteAudios({context, List<Audio> audios}) {
-  showDeletionConfirmationDialog(context: context, audios: audios);
-}
 
 class Audio {
   final String url;

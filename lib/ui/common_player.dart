@@ -57,8 +57,8 @@ class CommonPlayerState extends State<CommonPlayer> {
 
     if (setLastAudioMethodLocal is Function) {
       setLastAudioMethod = setLastAudioMethodLocal;
+      setLastAudioMethod(audios[index].url);
     }
-    setLastAudioMethod(audios[index].url);
     _updateName(audios[index].authorName);
 
     String path = await getLocalPath(audios[index].url);
