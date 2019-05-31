@@ -14,7 +14,7 @@ const String loadingConfirmationTitle_2 = ' Мбайт)';
 const String deletionConfirmationTitle =
     'Уверены, что хотите удалить аудиофайлы?';
 const String loadingConfirmationInfo =
-    'При медленном интернете или большом количестве скачиваемых файлов это может занять значительное время (час и более)';
+    'При медленном интернете это может занять значительное время (час и более)';
 const String deletionConfirmationInfo =
     'Для повторного прослушивания аудиофайлов их придется скачать заново';
 const String confirmLoadingButtonText = 'Скачать';
