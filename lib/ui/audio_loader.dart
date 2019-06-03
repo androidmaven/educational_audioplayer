@@ -267,3 +267,38 @@ class DeleteButton extends StatelessWidget {
         });
   }
 }
+
+void showAllFilesDeletionConfirmationDialog(
+    {context, Function deletionFunction, Function markAllAudiosAsDeleted}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          deletionConfirmationTitle,
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          deletionConfirmationInfo,
+          textAlign: TextAlign.center,
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(closeDialogButtonText),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text(confirmDeletionButtonText),
+            onPressed: () {
+              Navigator.of(context).pop();
+              deletionFunction();
+              markAllAudiosAsDeleted();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'player.dart';
 import 'ui/audio_loader.dart';
+import 'util/loader.dart';
 import 'util/shared_preferences.dart';
 
 class LoadDeleteButton extends StatefulWidget {
@@ -39,4 +40,11 @@ class _LoadDeleteButtonState extends State<LoadDeleteButton> {
             audios: widget.audios,
             setParentWidgetState: getLoadingState);
   }
+}
+
+Future deleteAllFiles(context) async {
+  showAllFilesDeletionConfirmationDialog(
+      context: context,
+      deletionFunction: deleteAllFilesFromDocumentsDirectory,
+      markAllAudiosAsDeleted: markAllAudiosAsDeleted);
 }

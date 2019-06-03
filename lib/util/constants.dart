@@ -28,3 +28,5 @@ const String deletionFailedDialogInfo =
 const String playFailedDialogTitle = 'Не удалось воспроизвести аудио';
 const String playFailedDialogInfo =
     'Возможно, файл поврежден, попробуйде удалить и заново скачать аудио';
+
+const String resourceAllDownloadedAudio = 'AllDownloadedAudios';

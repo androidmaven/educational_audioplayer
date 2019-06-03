@@ -38,3 +38,10 @@ Future<String> getLocalPath(String url) async {
   String fileName = url.replaceAll('/', '_').replaceAll(':', '_');
   return '${dir.path}/$fileName';
 }
+
+Future deleteAllFilesFromDocumentsDirectory() async {
+  final dir = await getApplicationDocumentsDirectory();
+  String files = dir.list().toString();
+  print(files);
+  dir.deleteSync(recursive: true);
+}
