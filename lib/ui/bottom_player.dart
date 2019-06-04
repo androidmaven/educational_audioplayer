@@ -1,5 +1,6 @@
 import 'package:educational_audioplayer/ui/common_player.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 import '../player.dart';
 import '../util/constants.dart';
@@ -56,6 +57,15 @@ class _BottomPlayerState extends CommonPlayerState {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            size: closeIconSize,
+                          ),
+                          onPressed: () {
+                            Share.share(
+                                '${currentAudios[currentAudioIndex].chapterName}\n\n${currentAudios[currentAudioIndex].audioName}\n\n${currentAudios[currentAudioIndex].audioDescription}\n\n${currentAudios[currentAudioIndex].authorName}\n\n${currentAudios[currentAudioIndex].url}');
+                          }),
                       Expanded(
                         child: Text(
                           currentAudios[currentAudioIndex].audioName,
