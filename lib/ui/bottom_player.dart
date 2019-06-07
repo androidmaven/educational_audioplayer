@@ -81,6 +81,7 @@ class _BottomPlayerState extends CommonPlayerState {
                           onPressed: () {
                             audioPlayer.stop();
                             hide();
+                            cancelNotification();
                           })
                     ]),
                 Text(

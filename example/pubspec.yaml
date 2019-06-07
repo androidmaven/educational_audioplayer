@@ -24,6 +24,7 @@ dependencies:
   http:
   path_provider:
   dynamic_theme:
+  flutter_local_notifications: ^0.4.5
   educational_audioplayer:
       path: ../
 

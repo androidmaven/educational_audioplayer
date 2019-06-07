@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayer/audioplayer.dart';
+import 'package:educational_audioplayer/util/notifications.dart';
 import 'package:flutter/material.dart';
 
 import '../player.dart';
@@ -18,7 +19,7 @@ class CommonPlayer extends StatefulWidget {
   }
 }
 
-class CommonPlayerState extends State<CommonPlayer> {
+class CommonPlayerState extends State<CommonPlayer> with Notifications {
   AudioPlayer audioPlayer;
   StreamSubscription positionSubscription;
   StreamSubscription audioPlayerStateSubscription;
@@ -40,6 +41,7 @@ class CommonPlayerState extends State<CommonPlayer> {
   void initState() {
     super.initState();
     _initAudioPlayer();
+    initNotifications();
   }
 
   @override
@@ -47,6 +49,7 @@ class CommonPlayerState extends State<CommonPlayer> {
     positionSubscription.cancel();
     audioPlayerStateSubscription.cancel();
     audioPlayer.stop();
+    cancelNotification();
     super.dispose();
   }
 
@@ -60,6 +63,7 @@ class CommonPlayerState extends State<CommonPlayer> {
       setLastAudioMethod(audios[index].url);
     }
     _updateName(audios[index].authorName);
+    showNotification();
 
     String path = await getLocalPath(audios[index].url);
     if ((await File(path).exists())) {
