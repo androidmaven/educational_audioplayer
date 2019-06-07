@@ -78,6 +78,7 @@ class CommonPlayerState extends State<CommonPlayer> {
   Future pause() async {
     await audioPlayer.pause();
     setState(() => playerState = AudioPlayerState.PAUSED);
+    cancelNotification();
   }
 
   Future stop() async {
