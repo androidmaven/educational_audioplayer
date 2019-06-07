@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayer/audioplayer.dart';
-import 'package:educational_audioplayer/util/notifications.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../player.dart';
 import '../util/constants.dart';
@@ -11,6 +12,7 @@ import '../util/loader.dart';
 
 List<Audio> currentAudios = [Audio(url: '')];
 int currentAudioIndex = 0;
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 class CommonPlayer extends StatefulWidget {
   @override
@@ -19,7 +21,7 @@ class CommonPlayer extends StatefulWidget {
   }
 }
 
-class CommonPlayerState extends State<CommonPlayer> with Notifications {
+class CommonPlayerState extends State<CommonPlayer> {
   AudioPlayer audioPlayer;
   StreamSubscription positionSubscription;
   StreamSubscription audioPlayerStateSubscription;
@@ -241,5 +243,46 @@ class CommonPlayerState extends State<CommonPlayer> with Notifications {
             ));
       },
     );
+  }
+
+  initNotifications() {
+    // initialise notification plugin
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future<void> onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {}
+
+  Future<void> onSelectNotification(String payload) async {
+    pause();
+  }
+
+  Future<void> showNotification() async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'silent channel id',
+        'silent channel name',
+        'silent channel description',
+        playSound: false,
+        enableVibration: false,
+        ongoing: true,
+        styleInformation: DefaultStyleInformation(true, true));
+    var iOSPlatformChannelSpecifics =
+        IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, notificationTitle, notificationBody, platformChannelSpecifics);
+  }
+
+  Future<void> cancelNotification() async {
+    await flutterLocalNotificationsPlugin.cancel(0);
   }
 }
