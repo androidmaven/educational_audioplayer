@@ -2,3 +2,5 @@
 
 ## [0.8.0] - Bottom player is done
 
+## [1.0.0] - user-friendly player and audio downloading, playing notification
+

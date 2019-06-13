@@ -1,14 +1,17 @@
 # educational_audioplayer
 
-A new Flutter package.
+Ready-to-use flutter audioplayer for iOS and Android.
+It is optimized to play educational audio from the Internet.
+It is based on [audioplayer](https://pub.dev/packages/audioplayer)
 
-## Getting Started
+## Features
 
-This project is a starting point for a Dart
-[package](https://flutter.io/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+- [x] Android & iOS
+  - [x] bottom player
+    - [x] play
+    - [x] pause
+    - [x] back/forward for 10 seconds
+    - [x] next/previous audio
+    - [x] share audio
+  - [x] download/delete audio
+  - [x] player notification
