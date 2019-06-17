@@ -32,3 +32,7 @@ const String notificationTitle = 'Остановить аудио';
 const String notificationBody = 'и открыть приложение';
 
 const String resourceAllDownloadedAudio = 'AllDownloadedAudios';
+
+const String notificationChannelId = 'Educational Audioplayer Notification ID';
+const String notificationChannelName = 'Educational Audioplayer Notification';
+const String notificationChannelDescription = 'Pause audio and open the app';

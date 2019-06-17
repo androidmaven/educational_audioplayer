@@ -268,9 +268,9 @@ class CommonPlayerState extends State<CommonPlayer> {
 
   Future<void> showNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'silent channel id',
-        'silent channel name',
-        'silent channel description',
+        notificationChannelId,
+        notificationChannelName,
+        notificationChannelDescription,
         playSound: false,
         enableVibration: false,
         ongoing: true,
