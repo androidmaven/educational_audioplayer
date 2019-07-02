@@ -43,7 +43,9 @@ class CommonPlayerState extends State<CommonPlayer> {
   void initState() {
     super.initState();
     _initAudioPlayer();
-    initNotifications();
+    try {
+      initNotifications();
+    } catch (Exception) {}
   }
 
   @override
@@ -51,7 +53,11 @@ class CommonPlayerState extends State<CommonPlayer> {
     positionSubscription.cancel();
     audioPlayerStateSubscription.cancel();
     audioPlayer.stop();
-    cancelNotification();
+
+    try {
+      cancelNotification();
+    } catch (Exception) {}
+
     super.dispose();
   }
 
@@ -65,7 +71,10 @@ class CommonPlayerState extends State<CommonPlayer> {
       setLastAudioMethod(audios[index].url);
     }
     _updateName(audios[index].authorName);
-    showNotification();
+
+    try {
+      showNotification();
+    } catch (Exception) {}
 
     String path = await getLocalPath(audios[index].url);
     if ((await File(path).exists())) {
@@ -78,7 +87,10 @@ class CommonPlayerState extends State<CommonPlayer> {
   Future pause() async {
     await audioPlayer.pause();
     setState(() => playerState = AudioPlayerState.PAUSED);
-    cancelNotification();
+
+    try {
+      cancelNotification();
+    } catch (Exception) {}
   }
 
   Future stop() async {
