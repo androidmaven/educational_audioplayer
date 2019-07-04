@@ -21,6 +21,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   audioplayer:
+    path: ../../audioplayer
   http:
   path_provider:
   dynamic_theme:
